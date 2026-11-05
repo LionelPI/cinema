@@ -8,7 +8,15 @@ use Illuminate\Http\Request;
 
 class SalleController extends Controller
 {
-    // Afficher toutes les salles
+    // Afficher les salles sur la page web
+    public function pageSalles()
+    {
+        $salles = Salle::all();
+
+        return view('salles', compact('salles'));
+    }
+
+    // Afficher toutes les salles dans l'API
     public function index(): JsonResponse
     {
         return response()->json(Salle::all());

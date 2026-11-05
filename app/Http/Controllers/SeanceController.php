@@ -11,6 +11,17 @@ use Carbon\Carbon;
 
 class SeanceController extends Controller
 {
+    // Afficher les séances sur la page web
+    public function pageSeances()
+    {
+        $seances = Seance::with(['film', 'salle'])
+            ->orderBy('date')
+            ->orderBy('heure')
+            ->get();
+
+        return view('seances', compact('seances'));
+    }
+
     // Afficher toutes les séances avec leur film et leur salle
     public function index(): JsonResponse
     {
