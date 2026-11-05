@@ -70,9 +70,17 @@
 
         .film-card {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .film-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 18px;
         }
 
         .film-card h3 {
@@ -155,6 +163,11 @@
                 const carte = document.createElement('div');
                 carte.className = 'film-card';
 
+                // Affiche du film
+                const image = document.createElement('img');
+                image.src = '/images/' + film.affiche;
+                image.alt = film.titre;
+
                 const titre = document.createElement('h3');
                 titre.textContent = film.titre;
 
@@ -170,6 +183,7 @@
                 const description = document.createElement('p');
                 description.textContent = film.description || '';
 
+                carte.appendChild(image);
                 carte.appendChild(titre);
                 carte.appendChild(genre);
                 carte.appendChild(duree);
