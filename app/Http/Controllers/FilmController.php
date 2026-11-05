@@ -8,12 +8,20 @@ use Illuminate\Http\Request;
 
 class FilmController extends Controller
 {
-    // Afficher les films sur la page web
+    // Afficher les films sur la page web publique
     public function pageFilms()
     {
         $films = Film::all();
 
         return view('films', compact('films'));
+    }
+
+    // Afficher les films dans l'administration
+    public function adminFilms()
+    {
+        $films = Film::all();
+
+        return view('admin.films', compact('films'));
     }
 
     // Afficher tous les films dans l'API

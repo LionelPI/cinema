@@ -80,7 +80,7 @@
         <a href="/films">Films</a>
         <a href="/seances">Séances</a>
         <a href="/salles">Salles</a>
-    </nav>
+           </nav>
 </header>
 
 <main>

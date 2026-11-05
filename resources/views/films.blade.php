@@ -1,95 +1,101 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Nos films - Cinema</title>
+    <title>Films - Cinema</title>
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
             background: #f4f5f7;
-            color: #222;
+            color: #202938;
         }
 
         header {
-            background: #172554;
+            background: #192953;
             color: white;
-            padding: 24px 8%;
+            padding: 25px 4%;
         }
 
         header h1 {
-            margin: 0;
+            font-size: 36px;
+            margin-bottom: 20px;
         }
 
         nav {
-            margin-top: 15px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            margin-right: 20px;
+            font-size: 17px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
         }
 
         main {
-            padding: 35px 8%;
+            max-width: 1250px;
+            margin: 60px auto;
+            padding: 0 25px;
+        }
+
+        h2 {
+            color: #192953;
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .intro {
+            color: #718096;
+            margin-bottom: 30px;
         }
 
         .films {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-top: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
         }
 
-        .film {
+        .film-card {
             background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px #00000010;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
         }
 
-        .film h2 {
-            color: #172554;
-            margin-top: 0;
+        .film-card h3 {
+            color: #192953;
+            font-size: 22px;
+            margin-bottom: 18px;
         }
 
-        .genre {
-            color: #2563eb;
-            font-weight: bold;
+        .film-card p {
+            margin-bottom: 12px;
+            color: #526078;
+            line-height: 1.5;
         }
 
-        .description {
-            line-height: 1.6;
-        }
-
-        .date {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .retour {
-            display: inline-block;
+        .message {
+            color: #718096;
             margin-top: 20px;
-            background: #2563eb;
-            color: white;
-            padding: 12px 18px;
-            border-radius: 6px;
-            text-decoration: none;
         }
 
         footer {
             text-align: center;
-            padding: 25px;
-            color: #666;
+            color: #718096;
+            padding: 40px;
         }
     </style>
 </head>
@@ -108,54 +114,78 @@
 </header>
 
 <main>
+
     <h2>Nos films</h2>
 
-    <p>Découvrez les films disponibles dans notre cinéma.</p>
+    <p class="intro">
+        Découvrez les films disponibles dans notre cinéma.
+    </p>
 
-    <div class="films">
-
-        @forelse ($films as $film)
-
-            <article class="film">
-
-                <h2>{{ $film->titre }}</h2>
-
-                <p class="genre">
-                    {{ $film->genre }}
-                </p>
-
-                <p>
-                    <strong>Durée :</strong>
-                    {{ $film->duree }} minutes
-                </p>
-
-                <p class="description">
-                    {{ $film->description ?? 'Aucune description disponible.' }}
-                </p>
-
-                @if ($film->date_sortie)
-                    <p class="date">
-                        Date de sortie :
-                        {{ $film->date_sortie }}
-                    </p>
-                @endif
-
-            </article>
-
-        @empty
-
-            <p>Aucun film disponible pour le moment.</p>
-
-        @endforelse
-
+    <div id="films" class="films">
+        <p class="message">Chargement des films...</p>
     </div>
 
-    <a class="retour" href="/">Retour à l'accueil</a>
 </main>
 
 <footer>
     Projet Cinema — PoC Laravel
 </footer>
+
+<script>
+    // Récupérer les films depuis l'API REST
+    fetch('/api/films')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des films.');
+            }
+
+            return response.json();
+        })
+        .then(films => {
+            const conteneur = document.getElementById('films');
+
+            conteneur.innerHTML = '';
+
+            if (films.length === 0) {
+                conteneur.innerHTML = '<p class="message">Aucun film disponible.</p>';
+                return;
+            }
+
+            films.forEach(film => {
+                const carte = document.createElement('div');
+                carte.className = 'film-card';
+
+                const titre = document.createElement('h3');
+                titre.textContent = film.titre;
+
+                const genre = document.createElement('p');
+                genre.textContent = 'Genre : ' + film.genre;
+
+                const duree = document.createElement('p');
+                duree.textContent = 'Durée : ' + film.duree + ' minutes';
+
+                const date = document.createElement('p');
+                date.textContent = 'Date de sortie : ' + (film.date_sortie || 'Non renseignée');
+
+                const description = document.createElement('p');
+                description.textContent = film.description || '';
+
+                carte.appendChild(titre);
+                carte.appendChild(genre);
+                carte.appendChild(duree);
+                carte.appendChild(date);
+                carte.appendChild(description);
+
+                conteneur.appendChild(carte);
+            });
+        })
+        .catch(erreur => {
+            document.getElementById('films').innerHTML =
+                '<p class="message">Impossible de charger les films. Veuillez réessayer.</p>';
+
+            console.error(erreur);
+        });
+</script>
 
 </body>
 </html>
