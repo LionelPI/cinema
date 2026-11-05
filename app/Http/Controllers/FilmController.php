@@ -4,19 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Models\Film;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
+
 class FilmController extends Controller
 {
+    // Afficher les films sur la page web
+    public function pageFilms()
+    {
+        $films = Film::all();
+
+        return view('films', compact('films'));
+    }
+
+    // Afficher tous les films dans l'API
     public function index(): JsonResponse
     {
         return response()->json(Film::all());
     }
 
+    // Afficher un film précis dans l'API
     public function show(Film $film): JsonResponse
     {
         return response()->json($film);
     }
 
+    // Ajouter un film via l'API
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -33,6 +45,7 @@ class FilmController extends Controller
         return response()->json($film, 201);
     }
 
+    // Modifier un film via l'API
     public function update(Request $request, Film $film): JsonResponse
     {
         $validated = $request->validate([
@@ -49,6 +62,7 @@ class FilmController extends Controller
         return response()->json($film);
     }
 
+    // Supprimer un film via l'API
     public function destroy(Film $film): JsonResponse
     {
         $film->delete();
