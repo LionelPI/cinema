@@ -1,12 +1,14 @@
-
 <?php
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\SeanceController;
 
+// Route de l'utilisateur connecté
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -35,9 +37,9 @@ Route::put('/seances/{seance}', [SeanceController::class, 'update']);
 Route::patch('/seances/{seance}', [SeanceController::class, 'update']);
 Route::delete('/seances/{seance}', [SeanceController::class, 'destroy']);
 
-// Réservations : consultation uniquement pour le moment
+// Réservations : consultation uniquement
 Route::get('/reservations', function () {
     return response()->json(
-        \Illuminate\Support\Facades\DB::table('reservations')->get()
+        DB::table('reservations')->get()
     );
 });
